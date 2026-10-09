@@ -1,0 +1,6 @@
+{
+  "name": "calculator",
+  "description": "A clean white and pink calculator for addition, subtraction, multiplication, and division of two numbers with live step-by-step breakdown and calculation tape.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
