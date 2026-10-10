@@ -12,11 +12,9 @@ import {
   ArrowLeftRight,
   Copy,
   Check,
-  RotateCcw,
   Trash2,
   CornerDownLeft,
   Delete,
-  Sparkles,
   ArrowUpRight,
   AlertCircle,
   Search
@@ -113,7 +111,6 @@ function formatNumber(value: number | null | undefined, precision: number = 6): 
   if (value === null || value === undefined || Number.isNaN(value)) return '—';
   if (!Number.isFinite(value)) return 'Undefined';
 
-  // Avoid floating point noise like 0.30000000000000004
   const rounded = Number(Math.round(Number(value + 'e' + precision)) + 'e-' + precision);
   return rounded.toLocaleString('en-US', {
     maximumFractionDigits: precision,
@@ -168,7 +165,6 @@ export default function App() {
     [parsedA, parsedB, operation]
   );
 
-  // All 4 operations preview for the current two numbers
   const allFourResults = useMemo(() => {
     return (['plus', 'minus', 'multiply', 'divide'] as Operation[]).map((op) => ({
       op,
@@ -177,7 +173,6 @@ export default function App() {
     }));
   }, [parsedA, parsedB]);
 
-  // Division integer remainder details when applicable
   const divisionBreakdown = useMemo(() => {
     if (parsedB === 0 || Number.isNaN(parsedA) || Number.isNaN(parsedB)) return null;
     const quotient = Math.trunc(parsedA / parsedB);
@@ -282,7 +277,6 @@ export default function App() {
     }, 1600);
   };
 
-  // Keyboard support when not focused directly inside a text input
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const activeTag = document.activeElement?.tagName.toLowerCase();
@@ -344,55 +338,53 @@ export default function App() {
   }, [history, historyFilter, searchQuery]);
 
   const sanitizeNumericInput = (raw: string): string => {
-    // Allow optional leading minus, digits, and a single decimal point
     const cleaned = raw.replace(/[^0-9.-]/g, '');
     const parts = cleaned.split('.');
     let formatted = parts[0];
     if (parts.length > 1) {
       formatted += '.' + parts.slice(1).join('');
     }
-    // Only allow minus at the start
     const isNegative = formatted.startsWith('-');
     formatted = formatted.replace(/-/g, '');
     return isNegative ? `-${formatted}` : formatted;
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFF9FB] text-[#2A121D] selection:bg-pink-200 selection:text-pink-950">
+    <div className="min-h-screen flex flex-col bg-[#0B192C] text-blue-50 selection:bg-blue-500 selection:text-white">
       {/* Top Bar Contract: 3 Zones separated by gap-8 */}
-      <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-pink-200/80 px-6 py-3.5">
+      <header className="sticky top-0 z-20 bg-[#0F233D]/95 backdrop-blur-sm border-b border-blue-800/80 px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-8">
           {/* Zone 1: Single text element wordmark */}
           <a
             href="#top"
-            className="text-xl font-bold tracking-tight text-[#2A121D] hover:text-pink-600 transition-colors whitespace-nowrap shrink-0"
+            className="text-xl font-bold tracking-tight text-blue-100 hover:text-blue-400 transition-colors whitespace-nowrap shrink-0"
           >
             calculator
           </a>
 
           {/* Zone 2: 4 concise single-line navigation links */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-[#7A5266]">
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-blue-300">
             <a
               href="#dual-input"
-              className="hover:text-pink-600 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-blue-100 transition-colors whitespace-nowrap shrink-0"
             >
               Two-Number Input
             </a>
             <a
               href="#keypad-section"
-              className="hover:text-pink-600 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-blue-100 transition-colors whitespace-nowrap shrink-0"
             >
               Tactile Keypad
             </a>
             <a
               href="#all-operations"
-              className="hover:text-pink-600 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-blue-100 transition-colors whitespace-nowrap shrink-0"
             >
               Four-Operation Matrix
             </a>
             <a
               href="#history-tape"
-              className="hover:text-pink-600 transition-colors whitespace-nowrap shrink-0"
+              className="hover:text-blue-100 transition-colors whitespace-nowrap shrink-0"
             >
               Calculation Tape
             </a>
@@ -403,7 +395,7 @@ export default function App() {
             <button
               type="button"
               onClick={handleResetWorkspace}
-              className="px-4 py-2 text-xs font-semibold text-white bg-pink-600 rounded-lg hover:bg-pink-700 active:scale-[0.99] transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 whitespace-nowrap shrink-0 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-500 active:scale-[0.99] transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 whitespace-nowrap shrink-0 cursor-pointer"
             >
               Reset Calculator
             </button>
@@ -413,21 +405,21 @@ export default function App() {
 
       {/* Main Content Container */}
       <main id="top" className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
-        {/* Intro Header & Precision Control Bar */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-8 border-b border-pink-200/70">
+        {/* Top Heading: "calculator" */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 mb-8 border-b border-blue-800/80">
           <div>
-            <p className="text-xs font-semibold text-pink-600 mb-1">
-              Two-Number Arithmetic Instrument · Plus · Minus · Multiply · Divide
+            <p className="text-xs font-semibold text-blue-400 mb-1">
+              Two-Number Arithmetic · Plus · Minus · Multiply · Divide
             </p>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#2A121D]">
-              White &amp; Pink Two-Number Calculator
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-blue-50">
+              calculator
             </h1>
           </div>
 
-          {/* Interactive Precision & Preset Selector */}
+          {/* Interactive Precision Selector */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1 p-1 bg-pink-50/90 border border-pink-200/80 rounded-lg">
-              <span className="px-2.5 text-xs font-medium text-[#7A5266] whitespace-nowrap shrink-0">
+            <div className="flex items-center gap-1 p-1 bg-[#132C4E] border border-blue-800 rounded-lg">
+              <span className="px-2.5 text-xs font-medium text-blue-300 whitespace-nowrap shrink-0">
                 Decimals
               </span>
               {[2, 4, 6].map((dec) => (
@@ -437,8 +429,8 @@ export default function App() {
                   onClick={() => setPrecision(dec)}
                   className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer font-mono-tabular ${
                     precision === dec
-                      ? 'bg-white text-pink-700 shadow-xs border border-pink-200/60'
-                      : 'text-[#7A5266] hover:text-[#2A121D]'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-blue-300 hover:text-blue-100'
                   }`}
                 >
                   {dec}
@@ -456,12 +448,12 @@ export default function App() {
             <section
               id="dual-input"
               aria-label="Two-number calculator"
-              className="bg-white border border-pink-200 rounded-2xl p-6 sm:p-8 shadow-xs"
+              className="bg-[#112643] border border-blue-800/90 rounded-2xl p-6 sm:p-8 shadow-xs"
             >
               {/* Live Result Display Screen */}
-              <div className="bg-[#FFF5F8] border border-pink-200/90 rounded-xl p-5 sm:p-6 mb-6">
+              <div className="bg-[#0B1B32] border border-blue-700/80 rounded-xl p-5 sm:p-6 mb-6">
                 <div className="flex items-center justify-between gap-4 mb-2">
-                  <div className="flex items-center gap-2 text-xs font-medium text-[#7A5266]">
+                  <div className="flex items-center gap-2 text-xs font-medium text-blue-300">
                     <span>{OPERATION_META[operation].verb}</span>
                     <span aria-hidden="true">·</span>
                     <span className="font-mono-tabular">
@@ -476,7 +468,7 @@ export default function App() {
                         type="button"
                         onClick={handleUseResultAsA}
                         title="Use this result as First Number (A)"
-                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-pink-700 bg-white hover:bg-pink-100/70 border border-pink-200 rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-blue-200 bg-[#16345B] hover:bg-blue-700 border border-blue-700 rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                       >
                         <span>Use as Number 1</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />
@@ -491,11 +483,11 @@ export default function App() {
                             'main-result'
                           )
                         }
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-pink-700 bg-white hover:bg-pink-100/70 border border-pink-200 rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-blue-200 bg-[#16345B] hover:bg-blue-700 border border-blue-700 rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                       >
                         {copiedId === 'main-result' ? (
                           <>
-                            <Check className="w-3.5 h-3.5 text-pink-600" />
+                            <Check className="w-3.5 h-3.5 text-blue-300" />
                             <span>Copied</span>
                           </>
                         ) : (
@@ -511,18 +503,18 @@ export default function App() {
 
                 {/* Main Numeric Result or Division-by-Zero Alert */}
                 {currentEvaluation.error ? (
-                  <div className="flex items-center gap-3 py-2 text-rose-700">
-                    <AlertCircle className="w-6 h-6 shrink-0 text-pink-600" />
+                  <div className="flex items-center gap-3 py-2 text-amber-300">
+                    <AlertCircle className="w-6 h-6 shrink-0 text-amber-400" />
                     <span className="text-base sm:text-lg font-semibold">
                       {currentEvaluation.error}
                     </span>
                   </div>
                 ) : (
                   <div className="flex items-baseline justify-between gap-4 overflow-x-auto py-1">
-                    <span className="text-sm font-medium text-pink-600 shrink-0">Result =</span>
+                    <span className="text-sm font-medium text-blue-400 shrink-0">Result =</span>
                     <output
                       aria-live="polite"
-                      className="text-3xl sm:text-5xl font-bold tracking-tight text-[#2A121D] font-mono-tabular text-right break-all"
+                      className="text-3xl sm:text-5xl font-bold tracking-tight text-blue-50 font-mono-tabular text-right break-all"
                     >
                       {formatNumber(currentEvaluation.result, precision)}
                     </output>
@@ -530,14 +522,14 @@ export default function App() {
                 )}
 
                 {/* Secondary Helpful Arithmetic Details */}
-                <div className="mt-3 pt-3 border-t border-pink-200/60 flex flex-wrap items-center justify-between gap-2 text-xs text-[#7A5266]">
+                <div className="mt-3 pt-3 border-t border-blue-800/80 flex flex-wrap items-center justify-between gap-2 text-xs text-blue-300">
                   <div className="flex items-center gap-2 font-mono-tabular">
                     <span>A = {formatNumber(parsedA, precision)}</span>
                     <span aria-hidden="true">·</span>
                     <span>B = {formatNumber(parsedB, precision)}</span>
                   </div>
                   {operation === 'divide' && divisionBreakdown && (
-                    <div className="font-mono-tabular text-pink-700 font-medium">
+                    <div className="font-mono-tabular text-blue-300 font-medium">
                       Integer Quotient: {divisionBreakdown.quotient} · Remainder:{' '}
                       {formatNumber(divisionBreakdown.remainder, precision)}
                     </div>
@@ -552,7 +544,7 @@ export default function App() {
                   <div className="flex items-center justify-between mb-1.5">
                     <label
                       htmlFor="number-a-input"
-                      className="text-xs font-semibold text-[#2A121D]"
+                      className="text-xs font-semibold text-blue-100"
                     >
                       First Number (A)
                     </label>
@@ -563,7 +555,7 @@ export default function App() {
                         inputARef.current?.focus();
                       }}
                       className={`text-xs font-medium cursor-pointer ${
-                        activeField === 'A' ? 'text-pink-600 underline' : 'text-[#7A5266]'
+                        activeField === 'A' ? 'text-blue-400 underline' : 'text-blue-300'
                       }`}
                     >
                       {activeField === 'A' ? 'Active on keypad' : 'Select for keypad'}
@@ -579,10 +571,10 @@ export default function App() {
                       onFocus={() => setActiveField('A')}
                       onChange={(e) => setInputA(sanitizeNumericInput(e.target.value))}
                       placeholder="0"
-                      className={`w-full px-4 py-3 text-lg font-semibold font-mono-tabular rounded-xl bg-white transition-all focus:outline-none ${
+                      className={`w-full px-4 py-3 text-lg font-semibold font-mono-tabular rounded-xl bg-[#0B1B32] transition-all focus:outline-none ${
                         activeField === 'A'
-                          ? 'border-2 border-pink-600 ring-4 ring-pink-100 text-[#2A121D]'
-                          : 'border border-pink-200 hover:border-pink-300 text-[#2A121D]'
+                          ? 'border-2 border-blue-500 ring-4 ring-blue-500/20 text-blue-50'
+                          : 'border border-blue-800 hover:border-blue-600 text-blue-100'
                       }`}
                     />
                     {inputA !== '0' && inputA !== '' && (
@@ -590,7 +582,7 @@ export default function App() {
                         type="button"
                         onClick={() => setInputA('0')}
                         aria-label="Clear First Number"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7A5266] hover:text-pink-600 px-1.5 py-0.5 rounded cursor-pointer"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-300 hover:text-blue-100 px-1.5 py-0.5 rounded cursor-pointer"
                       >
                         Clear
                       </button>
@@ -605,7 +597,7 @@ export default function App() {
                     onClick={handleSwapNumbers}
                     title="Swap First Number and Second Number"
                     aria-label="Swap First Number and Second Number"
-                    className="p-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 transition-colors cursor-pointer"
+                    className="p-2.5 rounded-xl bg-[#16345B] hover:bg-blue-700 text-blue-200 border border-blue-700 transition-colors cursor-pointer"
                   >
                     <ArrowLeftRight className="w-4 h-4" />
                   </button>
@@ -616,7 +608,7 @@ export default function App() {
                   <div className="flex items-center justify-between mb-1.5">
                     <label
                       htmlFor="number-b-input"
-                      className="text-xs font-semibold text-[#2A121D]"
+                      className="text-xs font-semibold text-blue-100"
                     >
                       Second Number (B)
                     </label>
@@ -627,7 +619,7 @@ export default function App() {
                         inputBRef.current?.focus();
                       }}
                       className={`text-xs font-medium cursor-pointer ${
-                        activeField === 'B' ? 'text-pink-600 underline' : 'text-[#7A5266]'
+                        activeField === 'B' ? 'text-blue-400 underline' : 'text-blue-300'
                       }`}
                     >
                       {activeField === 'B' ? 'Active on keypad' : 'Select for keypad'}
@@ -643,10 +635,10 @@ export default function App() {
                       onFocus={() => setActiveField('B')}
                       onChange={(e) => setInputB(sanitizeNumericInput(e.target.value))}
                       placeholder="0"
-                      className={`w-full px-4 py-3 text-lg font-semibold font-mono-tabular rounded-xl bg-white transition-all focus:outline-none ${
+                      className={`w-full px-4 py-3 text-lg font-semibold font-mono-tabular rounded-xl bg-[#0B1B32] transition-all focus:outline-none ${
                         activeField === 'B'
-                          ? 'border-2 border-pink-600 ring-4 ring-pink-100 text-[#2A121D]'
-                          : 'border border-pink-200 hover:border-pink-300 text-[#2A121D]'
+                          ? 'border-2 border-blue-500 ring-4 ring-blue-500/20 text-blue-50'
+                          : 'border border-blue-800 hover:border-blue-600 text-blue-100'
                       }`}
                     />
                     {inputB !== '0' && inputB !== '' && (
@@ -654,7 +646,7 @@ export default function App() {
                         type="button"
                         onClick={() => setInputB('0')}
                         aria-label="Clear Second Number"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-[#7A5266] hover:text-pink-600 px-1.5 py-0.5 rounded cursor-pointer"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-300 hover:text-blue-100 px-1.5 py-0.5 rounded cursor-pointer"
                       >
                         Clear
                       </button>
@@ -666,10 +658,10 @@ export default function App() {
               {/* Four Operation Selector Buttons: Plus, Minus, Multiply, Divide */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-semibold text-[#2A121D]">
+                  <span className="text-xs font-semibold text-blue-100">
                     Select Operation (Plus, Minus, Multiply, Divide)
                   </span>
-                  <span className="text-xs text-[#7A5266]">
+                  <span className="text-xs text-blue-300">
                     Click an operation to calculate immediately
                   </span>
                 </div>
@@ -692,15 +684,15 @@ export default function App() {
                         onClick={() => setOperation(op)}
                         className={`flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl font-semibold text-sm transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                           isSelected
-                            ? 'bg-pink-600 text-white shadow-xs ring-2 ring-pink-600 ring-offset-2'
-                            : 'bg-pink-50/70 hover:bg-pink-100/80 text-[#2A121D] border border-pink-200'
+                            ? 'bg-blue-600 text-white shadow-xs ring-2 ring-blue-400 ring-offset-2 ring-offset-[#112643]'
+                            : 'bg-[#16345B] hover:bg-blue-800/80 text-blue-100 border border-blue-700/80'
                         }`}
                       >
-                        <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-pink-600'}`} />
+                        <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-blue-400'}`} />
                         <span>{meta.label}</span>
                         <span
                           className={`font-mono-tabular text-xs ${
-                            isSelected ? 'text-pink-100' : 'text-[#7A5266]'
+                            isSelected ? 'text-blue-100' : 'text-blue-300'
                           }`}
                         >
                           ({meta.symbol})
@@ -711,30 +703,30 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Tactile White & Pink Keypad Section */}
-              <div id="keypad-section" className="pt-6 border-t border-pink-200/70">
+              {/* Tactile Blue Keypad Section */}
+              <div id="keypad-section" className="pt-6 border-t border-blue-800/80">
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-[#2A121D]">
+                    <span className="text-xs font-semibold text-blue-100">
                       Tactile Number Keypad
                     </span>
-                    <span aria-hidden="true" className="text-xs text-[#7A5266]">
+                    <span aria-hidden="true" className="text-xs text-blue-400">
                       ·
                     </span>
-                    <span className="text-xs text-pink-700 font-medium">
+                    <span className="text-xs text-blue-300 font-medium">
                       Typing into {activeField === 'A' ? 'First Number (A)' : 'Second Number (B)'}
                     </span>
                   </div>
 
                   {/* Quick Field Switcher */}
-                  <div className="flex items-center gap-1 p-1 bg-pink-50 border border-pink-200/80 rounded-lg">
+                  <div className="flex items-center gap-1 p-1 bg-[#0B1B32] border border-blue-800 rounded-lg">
                     <button
                       type="button"
                       onClick={() => setActiveField('A')}
                       className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                         activeField === 'A'
-                          ? 'bg-pink-600 text-white'
-                          : 'text-[#7A5266] hover:text-[#2A121D]'
+                          ? 'bg-blue-600 text-white'
+                          : 'text-blue-300 hover:text-blue-100'
                       }`}
                     >
                       Edit Number A
@@ -744,8 +736,8 @@ export default function App() {
                       onClick={() => setActiveField('B')}
                       className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                         activeField === 'B'
-                          ? 'bg-pink-600 text-white'
-                          : 'text-[#7A5266] hover:text-[#2A121D]'
+                          ? 'bg-blue-600 text-white'
+                          : 'text-blue-300 hover:text-blue-100'
                       }`}
                     >
                       Edit Number B
@@ -759,14 +751,14 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleClearActiveField}
-                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-[#16345B] hover:bg-blue-800 text-blue-200 border border-blue-700/80 transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
                     CE ({activeField})
                   </button>
                   <button
                     type="button"
                     onClick={handleResetWorkspace}
-                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-[#16345B] hover:bg-blue-800 text-blue-200 border border-blue-700/80 transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
                     AC
                   </button>
@@ -774,7 +766,7 @@ export default function App() {
                     type="button"
                     onClick={handleBackspace}
                     aria-label="Backspace"
-                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 transition-colors flex items-center justify-center cursor-pointer"
+                    className="py-3 px-4 rounded-xl text-sm font-semibold bg-[#16345B] hover:bg-blue-800 text-blue-200 border border-blue-700/80 transition-colors flex items-center justify-center cursor-pointer"
                   >
                     <Delete className="w-4 h-4" />
                   </button>
@@ -783,8 +775,8 @@ export default function App() {
                     onClick={() => handleSelectOperationFromKeypad('divide')}
                     className={`py-3 px-4 rounded-xl text-base font-bold font-mono-tabular transition-colors cursor-pointer ${
                       operation === 'divide'
-                        ? 'bg-pink-600 text-white'
-                        : 'bg-pink-100/90 hover:bg-pink-200/80 text-pink-800 border border-pink-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-blue-700/70 hover:bg-blue-600 text-blue-100 border border-blue-600'
                     }`}
                   >
                     ÷
@@ -796,7 +788,7 @@ export default function App() {
                       key={digit}
                       type="button"
                       onClick={() => handleKeypadDigit(digit)}
-                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-white hover:bg-pink-50/70 active:bg-pink-100/60 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] active:bg-blue-800 text-blue-50 border border-blue-800 transition-colors cursor-pointer"
                     >
                       {digit}
                     </button>
@@ -806,8 +798,8 @@ export default function App() {
                     onClick={() => handleSelectOperationFromKeypad('multiply')}
                     className={`py-3.5 px-4 rounded-xl text-base font-bold font-mono-tabular transition-colors cursor-pointer ${
                       operation === 'multiply'
-                        ? 'bg-pink-600 text-white'
-                        : 'bg-pink-100/90 hover:bg-pink-200/80 text-pink-800 border border-pink-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-blue-700/70 hover:bg-blue-600 text-blue-100 border border-blue-600'
                     }`}
                   >
                     ×
@@ -819,7 +811,7 @@ export default function App() {
                       key={digit}
                       type="button"
                       onClick={() => handleKeypadDigit(digit)}
-                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-white hover:bg-pink-50/70 active:bg-pink-100/60 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] active:bg-blue-800 text-blue-50 border border-blue-800 transition-colors cursor-pointer"
                     >
                       {digit}
                     </button>
@@ -829,8 +821,8 @@ export default function App() {
                     onClick={() => handleSelectOperationFromKeypad('minus')}
                     className={`py-3.5 px-4 rounded-xl text-base font-bold font-mono-tabular transition-colors cursor-pointer ${
                       operation === 'minus'
-                        ? 'bg-pink-600 text-white'
-                        : 'bg-pink-100/90 hover:bg-pink-200/80 text-pink-800 border border-pink-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-blue-700/70 hover:bg-blue-600 text-blue-100 border border-blue-600'
                     }`}
                   >
                     −
@@ -842,7 +834,7 @@ export default function App() {
                       key={digit}
                       type="button"
                       onClick={() => handleKeypadDigit(digit)}
-                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-white hover:bg-pink-50/70 active:bg-pink-100/60 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                      className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] active:bg-blue-800 text-blue-50 border border-blue-800 transition-colors cursor-pointer"
                     >
                       {digit}
                     </button>
@@ -852,8 +844,8 @@ export default function App() {
                     onClick={() => handleSelectOperationFromKeypad('plus')}
                     className={`py-3.5 px-4 rounded-xl text-base font-bold font-mono-tabular transition-colors cursor-pointer ${
                       operation === 'plus'
-                        ? 'bg-pink-600 text-white'
-                        : 'bg-pink-100/90 hover:bg-pink-200/80 text-pink-800 border border-pink-200'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-blue-700/70 hover:bg-blue-600 text-blue-100 border border-blue-600'
                     }`}
                   >
                     +
@@ -863,28 +855,28 @@ export default function App() {
                   <button
                     type="button"
                     onClick={handleToggleSign}
-                    className="py-3.5 px-4 rounded-xl text-sm font-semibold font-mono-tabular bg-white hover:bg-pink-50/70 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                    className="py-3.5 px-4 rounded-xl text-sm font-semibold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] text-blue-100 border border-blue-800 transition-colors cursor-pointer"
                   >
                     +/−
                   </button>
                   <button
                     type="button"
                     onClick={() => handleKeypadDigit('0')}
-                    className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-white hover:bg-pink-50/70 active:bg-pink-100/60 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                    className="py-3.5 px-4 rounded-xl text-lg font-semibold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] active:bg-blue-800 text-blue-50 border border-blue-800 transition-colors cursor-pointer"
                   >
                     0
                   </button>
                   <button
                     type="button"
                     onClick={() => handleKeypadDigit('.')}
-                    className="py-3.5 px-4 rounded-xl text-lg font-bold font-mono-tabular bg-white hover:bg-pink-50/70 text-[#2A121D] border border-pink-200/90 transition-colors cursor-pointer"
+                    className="py-3.5 px-4 rounded-xl text-lg font-bold font-mono-tabular bg-[#0B1B32] hover:bg-[#16345B] text-blue-50 border border-blue-800 transition-colors cursor-pointer"
                   >
                     .
                   </button>
                   <button
                     type="button"
                     onClick={() => handleRecordToHistory()}
-                    className="py-3.5 px-4 rounded-xl text-sm font-bold bg-pink-600 hover:bg-pink-700 active:scale-[0.99] text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
+                    className="py-3.5 px-4 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <span>= Save</span>
                     <CornerDownLeft className="w-3.5 h-3.5" />
@@ -897,20 +889,20 @@ export default function App() {
             <section
               id="all-operations"
               aria-label="Simultaneous Four-Operation Matrix"
-              className="bg-white border border-pink-200 rounded-2xl p-6 sm:p-8"
+              className="bg-[#112643] border border-blue-800/90 rounded-2xl p-6 sm:p-8"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-5 border-b border-pink-200/70">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-5 border-b border-blue-800/80">
                 <div>
-                  <h2 className="text-lg font-bold text-[#2A121D]">
+                  <h2 className="text-lg font-bold text-blue-50">
                     All Four Operations for Current Pair
                   </h2>
-                  <p className="text-xs text-[#7A5266]">
+                  <p className="text-xs text-blue-300">
                     Instant comparison of Plus, Minus, Multiply, and Divide for A ={' '}
-                    <span className="font-mono-tabular font-medium text-[#2A121D]">
+                    <span className="font-mono-tabular font-medium text-blue-100">
                       {formatNumber(parsedA, precision)}
                     </span>{' '}
                     and B ={' '}
-                    <span className="font-mono-tabular font-medium text-[#2A121D]">
+                    <span className="font-mono-tabular font-medium text-blue-100">
                       {formatNumber(parsedB, precision)}
                     </span>
                   </p>
@@ -934,13 +926,13 @@ export default function App() {
                       }}
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
                         isActive
-                          ? 'bg-[#FFF5F8] border-pink-500 ring-1 ring-pink-500'
-                          : 'bg-white hover:bg-pink-50/40 border-pink-200/90'
+                          ? 'bg-[#16345B] border-blue-400 ring-1 ring-blue-400'
+                          : 'bg-[#0B1B32] hover:bg-[#142E52] border-blue-800'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2 mb-2">
-                        <div className="flex items-center gap-2 text-xs font-medium text-[#7A5266]">
-                          <span className="font-semibold text-[#2A121D]">{meta.label}</span>
+                        <div className="flex items-center gap-2 text-xs font-medium text-blue-300">
+                          <span className="font-semibold text-blue-100">{meta.label}</span>
                           <span aria-hidden="true">·</span>
                           <span className="font-mono-tabular">{meta.shortLabel}</span>
                         </div>
@@ -950,21 +942,21 @@ export default function App() {
                             e.stopPropagation();
                             handleRecordToHistory(op);
                           }}
-                          className="text-xs font-semibold text-pink-600 hover:text-pink-800 whitespace-nowrap shrink-0 cursor-pointer"
+                          className="text-xs font-semibold text-blue-400 hover:text-blue-200 whitespace-nowrap shrink-0 cursor-pointer"
                         >
                           Log to Tape
                         </button>
                       </div>
 
-                      <div className="font-mono-tabular text-xs text-[#7A5266] mb-1">
+                      <div className="font-mono-tabular text-xs text-blue-300 mb-1">
                         {formatNumber(parsedA, precision)} {meta.symbol}{' '}
                         {formatNumber(parsedB, precision)} =
                       </div>
 
                       {error ? (
-                        <div className="text-sm font-semibold text-rose-600">Cannot divide by 0</div>
+                        <div className="text-sm font-semibold text-amber-300">Cannot divide by 0</div>
                       ) : (
-                        <div className="text-xl font-bold text-[#2A121D] font-mono-tabular break-all">
+                        <div className="text-xl font-bold text-blue-50 font-mono-tabular break-all">
                           {formatNumber(result, precision)}
                         </div>
                       )}
@@ -980,12 +972,12 @@ export default function App() {
             <section
               id="history-tape"
               aria-label="Calculation History Tape"
-              className="bg-white border border-pink-200 rounded-2xl p-6 sm:p-8"
+              className="bg-[#112643] border border-blue-800/90 rounded-2xl p-6 sm:p-8"
             >
-              <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-pink-200/70">
+              <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-blue-800/80">
                 <div>
-                  <h2 className="text-lg font-bold text-[#2A121D]">Calculation Tape</h2>
-                  <p className="text-xs text-[#7A5266]">
+                  <h2 className="text-lg font-bold text-blue-50">Calculation Tape</h2>
+                  <p className="text-xs text-blue-300">
                     Click any saved calculation to reload its two numbers
                   </p>
                 </div>
@@ -994,7 +986,7 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setHistory([])}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#7A5266] hover:text-rose-700 hover:bg-pink-50 rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-300 hover:text-blue-100 hover:bg-[#16345B] rounded-lg transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Clear Tape</span>
@@ -1002,9 +994,9 @@ export default function App() {
                 )}
               </div>
 
-              {/* Interactive Filter Controls (Buttons/Tabs Allowed per Design Constitution) */}
+              {/* Interactive Filter Controls */}
               <div className="space-y-3 mb-5">
-                <div className="flex items-center gap-1 p-1 bg-pink-50/90 border border-pink-200/70 rounded-lg overflow-x-auto">
+                <div className="flex items-center gap-1 p-1 bg-[#0B1B32] border border-blue-800 rounded-lg overflow-x-auto">
                   {(
                     [
                       { id: 'all', label: 'All' },
@@ -1020,8 +1012,8 @@ export default function App() {
                       onClick={() => setHistoryFilter(tab.id)}
                       className={`px-2.5 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                         historyFilter === tab.id
-                          ? 'bg-white text-pink-700 shadow-xs border border-pink-200/60'
-                          : 'text-[#7A5266] hover:text-[#2A121D]'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'text-blue-300 hover:text-blue-100'
                       }`}
                     >
                       {tab.label}
@@ -1031,37 +1023,37 @@ export default function App() {
 
                 {/* Search Input */}
                 <div className="relative">
-                  <Search className="w-4 h-4 text-[#7A5266] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <Search className="w-4 h-4 text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Filter calculations by number or operation..."
-                    className="w-full pl-9 pr-4 py-2 text-xs bg-[#FFF9FB] border border-pink-200 rounded-lg text-[#2A121D] placeholder:text-[#7A5266]/70 focus:outline-none focus:border-pink-500"
+                    className="w-full pl-9 pr-4 py-2 text-xs bg-[#0B1B32] border border-blue-800 rounded-lg text-blue-50 placeholder:text-blue-400/70 focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               {/* Tape Entries List */}
               {filteredHistory.length === 0 ? (
-                <div className="text-center py-12 px-4 border border-dashed border-pink-200 rounded-xl bg-[#FFF9FB]">
-                  <p className="text-sm font-semibold text-[#2A121D] mb-1">
+                <div className="text-center py-12 px-4 border border-dashed border-blue-800 rounded-xl bg-[#0B1B32]">
+                  <p className="text-sm font-semibold text-blue-100 mb-1">
                     No calculations in tape
                   </p>
-                  <p className="text-xs text-[#7A5266] mb-4">
+                  <p className="text-xs text-blue-300 mb-4">
                     Press &ldquo;= Save&rdquo; on the keypad or &ldquo;Log to Tape&rdquo; to record
                     two-number calculations here.
                   </p>
                   <button
                     type="button"
                     onClick={() => handleRecordToHistory()}
-                    className="px-4 py-2 text-xs font-semibold text-white bg-pink-600 hover:bg-pink-700 rounded-lg transition-colors cursor-pointer whitespace-nowrap shrink-0"
+                    className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 rounded-lg transition-colors cursor-pointer whitespace-nowrap shrink-0"
                   >
                     Log Current Calculation
                   </button>
                 </div>
               ) : (
-                <div className="divide-y divide-pink-100 max-h-[460px] overflow-y-auto pr-1">
+                <div className="divide-y divide-blue-800/60 max-h-[460px] overflow-y-auto pr-1">
                   {filteredHistory.map((item) => {
                     const meta = OPERATION_META[item.operation];
                     return (
@@ -1078,9 +1070,9 @@ export default function App() {
                           }}
                           className="text-left flex-1 min-w-0 cursor-pointer"
                         >
-                          {/* Clean unboxed metadata with typographic separators (Zero-Pill Discipline) */}
-                          <div className="flex items-center gap-1.5 text-xs text-[#7A5266] mb-1">
-                            <span className="font-medium text-pink-700">{meta.verb}</span>
+                          {/* Clean unboxed metadata with typographic separators */}
+                          <div className="flex items-center gap-1.5 text-xs text-blue-300 mb-1">
+                            <span className="font-medium text-blue-400">{meta.verb}</span>
                             <span aria-hidden="true">·</span>
                             <span>{item.timestamp}</span>
                             {item.note && (
@@ -1091,10 +1083,10 @@ export default function App() {
                             )}
                           </div>
 
-                          <div className="font-mono-tabular text-sm font-semibold text-[#2A121D] truncate">
+                          <div className="font-mono-tabular text-sm font-semibold text-blue-100 truncate">
                             {formatNumber(item.numA, precision)} {meta.symbol}{' '}
                             {formatNumber(item.numB, precision)} ={' '}
-                            <span className="text-pink-700 font-bold">
+                            <span className="text-blue-400 font-bold">
                               {item.error ? 'Error' : formatNumber(item.result, precision)}
                             </span>
                           </div>
@@ -1107,7 +1099,7 @@ export default function App() {
                               handleCopyText(formatNumber(item.result, precision), item.id)
                             }
                             aria-label="Copy calculation result"
-                            className="px-2.5 py-1.5 text-xs font-medium text-[#7A5266] hover:text-pink-700 hover:bg-pink-50 rounded-md border border-transparent hover:border-pink-200 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                            className="px-2.5 py-1.5 text-xs font-medium text-blue-300 hover:text-blue-100 hover:bg-[#16345B] rounded-md border border-transparent hover:border-blue-700 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
                           >
                             {copiedId === item.id ? 'Copied' : 'Copy'}
                           </button>
@@ -1122,12 +1114,12 @@ export default function App() {
             {/* Quick Example Number Pairs & Keyboard Reference */}
             <section
               aria-label="Quick Number Pairs and Shortcuts"
-              className="bg-white border border-pink-200 rounded-2xl p-6"
+              className="bg-[#112643] border border-blue-800/90 rounded-2xl p-6"
             >
-              <h3 className="text-sm font-bold text-[#2A121D] mb-1">
+              <h3 className="text-sm font-bold text-blue-50 mb-1">
                 Quick Two-Number Presets
               </h3>
-              <p className="text-xs text-[#7A5266] mb-4">
+              <p className="text-xs text-blue-300 mb-4">
                 Load sample number pairs to test addition, subtraction, multiplication, or division.
               </p>
 
@@ -1146,33 +1138,33 @@ export default function App() {
                       setInputB(preset.b);
                       setOperation(preset.op);
                     }}
-                    className="px-3 py-2.5 text-xs font-semibold font-mono-tabular text-left text-[#2A121D] bg-[#FFF9FB] hover:bg-pink-50 border border-pink-200 rounded-xl transition-colors flex items-center justify-between cursor-pointer whitespace-nowrap shrink-0"
+                    className="px-3 py-2.5 text-xs font-semibold font-mono-tabular text-left text-blue-100 bg-[#0B1B32] hover:bg-[#16345B] border border-blue-800 rounded-xl transition-colors flex items-center justify-between cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <span>{preset.label}</span>
-                    <span className="text-pink-600">Load</span>
+                    <span className="text-blue-400">Load</span>
                   </button>
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-pink-200/70">
-                <h4 className="text-xs font-semibold text-[#2A121D] mb-2">
+              <div className="pt-4 border-t border-blue-800/80">
+                <h4 className="text-xs font-semibold text-blue-100 mb-2">
                   Keyboard Controls
                 </h4>
-                <div className="grid grid-cols-2 gap-y-1.5 text-xs text-[#7A5266]">
+                <div className="grid grid-cols-2 gap-y-1.5 text-xs text-blue-300">
                   <div>
-                    <span className="font-mono-tabular font-semibold text-pink-700">+ − * /</span> ·
+                    <span className="font-mono-tabular font-semibold text-blue-400">+ − * /</span> ·
                     Choose operation
                   </div>
                   <div>
-                    <span className="font-mono-tabular font-semibold text-pink-700">Tab</span> ·
+                    <span className="font-mono-tabular font-semibold text-blue-400">Tab</span> ·
                     Switch A / B
                   </div>
                   <div>
-                    <span className="font-mono-tabular font-semibold text-pink-700">Enter</span> ·
+                    <span className="font-mono-tabular font-semibold text-blue-400">Enter</span> ·
                     Save to tape
                   </div>
                   <div>
-                    <span className="font-mono-tabular font-semibold text-pink-700">Esc</span> ·
+                    <span className="font-mono-tabular font-semibold text-blue-400">Esc</span> ·
                     Reset numbers
                   </div>
                 </div>
@@ -1183,9 +1175,9 @@ export default function App() {
       </main>
 
       {/* Quiet Footer */}
-      <footer className="border-t border-pink-200/70 bg-white px-6 py-4 mt-12">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#7A5266]">
-          <span>calculator · White &amp; Pink Two-Number Arithmetic Workspace</span>
+      <footer className="border-t border-blue-800/80 bg-[#0F233D] px-6 py-4 mt-12">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-blue-300">
+          <span>calculator · Blue Two-Number Arithmetic Workspace</span>
           <span className="font-mono-tabular">Plus (+) · Minus (−) · Multiply (×) · Divide (÷)</span>
         </div>
       </footer>
